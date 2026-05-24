@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú Digital - El Buen Gusto</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Encabezado y Navegación de Categorías -->
+    <header class="main-header">
+        <div class="logo">🍴 El Buen Gusto</div>
+        <nav class="categories-nav">
+            <button class="nav-btn active" data-category="todos">Todos</button>
+            <button class="nav-btn" data-category="desayunos">Desayunos</button>
+            <button class="nav-btn" data-category="fuertes">Platos Fuertes</button>
+            <button class="nav-btn" data-category="bebidas">Bebidas</button>
+        </nav>
+        <div class="cart-icon">🛒 <span id="cart-count">0</span></div>
+    </header>
+
+    <!-- Banner Dinámico: Menú del Día -->
+    <section class="menu-del-dia" id="menu-dia-section">
+        <div class="banner-content">
+            <span class="badge">RECOMENDADO DE HOY</span>
+            <h1 id="platillo-del-dia">Cargando menú del día...</h1>
+            <p>Incluye entrada, plato fuerte, bebida y postre por un precio especial.</p>
+            <button class="btn-primary">Agregar Combo del Día</button>
+        </div>
+    </section>
+
+    <!-- Contenedor Principal de Platos -->
+    <main class="menu-container">
+        <!-- Los platos se generarán dinámicamente con JavaScript aquí -->
+    </main>
+
+    <!-- Carrito Flotante -->
+    <div class="floating-cart">
+        <span>Total: $<span id="cart-total">0.00</span></span>
+        <button class="btn-checkout">Ver Pedido</button>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
