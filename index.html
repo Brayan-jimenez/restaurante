@@ -3,43 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menú Digital - El Buen Gusto</title>
+    <title>Menú Interactivo - Restaurante</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <!-- Encabezado y Navegación de Categorías -->
+
     <header class="main-header">
-        <div class="logo">🍴 El Buen Gusto</div>
-        <nav class="categories-nav">
-            <button class="nav-btn active" data-category="todos">Todos</button>
-            <button class="nav-btn" data-category="desayunos">Desayunos</button>
-            <button class="nav-btn" data-category="fuertes">Platos Fuertes</button>
-            <button class="nav-btn" data-category="bebidas">Bebidas</button>
-        </nav>
-        <div class="cart-icon">🛒 <span id="cart-count">0</span></div>
+        <h1>Bienvenido a Nuestro Restaurante</h1>
+        <h2>Sugerencias del Día</h2>
     </header>
 
-    <!-- Banner Dinámico: Menú del Día -->
-    <section class="menu-del-dia" id="menu-dia-section">
-        <div class="banner-content">
-            <span class="badge">RECOMENDADO DE HOY</span>
-            <h1 id="platillo-del-dia">Cargando menú del día...</h1>
-            <p>Incluye entrada, plato fuerte, bebida y postre por un precio especial.</p>
-            <button class="btn-primary">Agregar Combo del Día</button>
-        </div>
-    </section>
-
-    <!-- Contenedor Principal de Platos -->
     <main class="menu-container">
-        <!-- Los platos se generarán dinámicamente con JavaScript aquí -->
+        <section class="daily-menu-section">
+            <div class="carousel-container">
+                <div class="carousel-slide">
+                    <img id="carousel-img" src="" alt="Plato del día">
+                    <div class="carousel-caption">
+                        <h3 id="carousel-title">Cargando plato...</h3>
+                        <p id="carousel-desc">Cargando descripción...</p>
+                    </div>
+                </div>
+                <button class="carousel-btn prev" onclick="cambiarSlide(-1)">&#10094;</button>
+                <button class="carousel-btn next" onclick="cambiarSlide(1)">&#10095;</button>
+            </div>
+            <div class="center-content">
+                <button class="btn-add-order" onclick="agregarPlatoDelDia()">Agregar Menú del Día</button>
+            </div>
+        </section>
+
+        <section class="cards-grid" id="menu-items">
+            <div class="card" data-id="1" data-name="Bandeja Paisa" data-precio="25000">
+                <div class="card-img-container">
+                    <img src="assets/lomo.jpg" alt="Plato">
+                </div>
+                <div class="card-body">
+                    <h3>Bandeja Paisa</h3>
+                    <p class="precio">$25.000</p>
+                    <button class="btn-card" onclick="agregarAlPedido(1, 'Bandeja Paisa', 25000)">Agregar</button>
+                </div>
+            </div>
+            </section>
+
+        <section class="order-summary">
+            <h3>Tu Pedido Actual</h3>
+            <ul id="lista-pedido">
+                </ul>
+            <div class="total-container">
+                <strong>Total a pagar: <span id="total-precio">$0</span></strong>
+            </div>
+            <button class="btn-send-caja" onclick="enviarACaja()">Enviar Pedido a Caja</button>
+        </section>
+
+        <footer class="category-footer">
+            <nav class="category-buttons">
+                <button class="btn-category">Platos Fuertes</button>
+                <button class="btn-category">Desayunos</button>
+                <button class="btn-category">Bebidas</button>
+            </nav>
+        </footer>
     </main>
 
-    <!-- Carrito Flotante -->
-    <div class="floating-cart">
-        <span>Total: $<span id="cart-total">0.00</span></span>
-        <button class="btn-checkout">Ver Pedido</button>
-    </div>
-
-    <script src="js/script.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>

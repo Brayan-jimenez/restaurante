@@ -1,79 +1,113 @@
-// 1. Datos de los platos
-const platos = [
-    { id: 1, nombre: "Huevos Rancheros", categoria: "desayunos", precio: 14.00, img: "assets/huevos.jpg", desc: "Huevos divorciados con salsa roja y verde." },
-    { id: 2, nombre: "Panqueques con Miel", categoria: "desayunos", precio: 12.00, img: "assets/pancakes.jpg", desc: "Tres panqueques esponjosos con arándanos." },
-    { id: 3, nombre: "Tacos de Barbacoa", categoria: "fuertes", precio: 15.00, img: "assets/tacos.jpg", desc: "Tres tacos de carne tierna con cebolla y cilantro." },
-    { id: 4, nombre: "Lomo Saltado", categoria: "fuertes", precio: 25.00, img: "assets/lomo.jpg", desc: "Jugoso lomo salteado al wok con papas fritas." },
-    { id: 5, nombre: "Jugo de Naranja", categoria: "bebidas", precio: 5.00, img: "assets/jugo.jpg", desc: "100% natural y recién exprimido." }
+// 1. Datos para el Carrusel del Menú del Día
+const componentesMenuDia = [
+    {
+        titulo: "Plato Fuerte: Asado Especial",
+        descripcion: "Carne de res seleccionada a la parrilla, sazonada con finas hierbas.",
+        img: "https://via.placeholder.com/600x350/d9534f/ffffff?text=Carne+Asada"
+    },
+    {
+        titulo: "Acompañamiento: Arroz e Iniciales",
+        descripcion: "Acompañado de arroz blanco suelto, plátano maduro y ensalada fresca.",
+        img: "https://via.placeholder.com/600x350/f0ad4e/ffffff?text=Acompañamientos"
+    },
+    {
+        titulo: "Bebida del Día: Jugo Natural",
+        descripcion: "Refrescante jugo de la casa preparado con fruta 100% natural.",
+        img: "https://via.placeholder.com/600x350/5bc0de/ffffff?text=Jugo+Natural"
+    }
 ];
 
-// 2. Lógica del Menú del Día Automático
-const menusDelDia = {
-    0: "Domingo: Familiar de Asado",
-    1: "Lunes: Crema de Tomate + Filete de Pollo",
-    2: "Martes: Sopa de Lentejas + Lomo de Cerdo",
-    3: "Miércoles: Menú Ejecutivo de Tacos",
-    4: "Jueves: Pasta Alfredo con Pollo",
-    5: "Viernes: Hamburguesa Especial + Papas",
-    6: "Sábado: Ajiaco Santafereño Premium"
-};
+let slideActual = 0;
+const precioMenuDia = 18000; // Precio fijo del combo del día
 
-// Al cargar la página, ejecutar funciones
-document.addEventListener("DOMContentLoaded", () => {
-    mostrarMenuDelDia();
-    renderizarPlatos("todos");
-    configurarFiltros();
-});
+// Función para renderizar el carrusel
+function mostrarSlide(index) {
+    if (index >= componentesMenuDia.length) slideActual = 0;
+    if (index < 0) slideActual = componentesMenuDia.length - 1;
 
-// Función para actualizar el Banner del Menú del Día según la fecha real
-function mostrarMenuDelDia() {
-    const diaActual = new Date().getDay(); // Da un número del 0 (Domingo) al 6 (Sábado)
-    document.getElementById("platillo-del-dia").innerText = menusDelDia[diaActual];
+    const elemento = componentesMenuDia[slideActual];
+    document.getElementById("carousel-img").src = elemento.img;
+    document.getElementById("carousel-title").innerText = elemento.titulo;
+    document.getElementById("carousel-desc").innerText = elemento.descripcion;
 }
 
-// Función para pintar los platos en el HTML
-function renderizarPlatos(categoriaSeleccionada) {
-    const contenedor = document.querySelector(".menu-container");
-    contenedor.innerHTML = ""; // Limpiar contenedor
-
-    const platosFiltrados = categoriaSeleccionada === "todos" 
-        ? platos 
-        : platos.filter(p => p.categoria === categoriaSeleccionada);
-
-    platosFiltrados.forEach(plato => {
-        contenedor.innerHTML += `
-            <div class="plate-card">
-                <img src="${plato.img}" alt="${plato.nombre}">
-                <div class="plate-info">
-                    <h3>${plato.nombre}</h3>
-                    <p>${plato.desc}</p>
-                    <div class="plate-price">$${plato.precio.toFixed(2)}</div>
-                    <button class="btn-add" onclick="agregarAlCarrito(${plato.precio})">+</button>
-                </div>
-            </div>
-        `;
-    });
+function cambiarSlide(direccion) {
+    slideActual += direccion;
+    mostrarSlide(slideActual);
 }
 
-// Variables para el carrito
-let totalCarrito = 0;
-let cantidadItems = 0;
+// Inicializar el carrusel al cargar la página
+mostrarSlide(slideActual);
 
-function agregarAlCarrito(precio) {
-    totalCarrito += precio;
-    cantidadItems++;
-    document.getElementById("cart-count").innerText = cantidadItems;
-    document.getElementById("cart-total").innerText = totalCarrito.toFixed(2);
-}
 
-// Configurar los clicks en los botones de categoría
-function configurarFiltros() {
-    const botones = document.querySelectorAll(".nav-btn");
-    botones.forEach(btn => {
-        btn.addEventListener("click", (e) => {
-            botones.forEach(b => b.classList.remove("active"));
-            e.target.classList.add("active");
-            renderizarPlatos(e.target.dataset.category);
+// 2. Lógica de Acumulación del Pedido (Carrito)
+let pedidoAcumulado = [];
+
+function agregarAlPedido(id, nombre, precio) {
+    // Verificar si el plato ya está en el pedido para sumar cantidad
+    const itemExistente = pedidoAcumulado.find(item => item.id === id);
+    
+    if (itemExistente) {
+        itemExistente.cantidad += 1;
+    } else {
+        pedidoAcumulado.push({
+            id: id,
+            nombre: nombre,
+            precio: precio,
+            cantidad: 1
         });
-    });
+    }
+    actualizarInterfazPedido();
 }
+
+function agregarPlatoDelDia() {
+    // El menú del día usa un ID fijo (ej: 99)
+    agregarAlPedido(99, "Combo Menú del Día Completo", precioMenuDia);
+}
+
+// Actualiza la lista en pantalla y calcula totales
+function actualizarInterfazPedido() {
+    const listaHTML = document.getElementById("lista-pedido");
+    const totalHTML = document.getElementById("total-precio");
+    
+    listaHTML.innerHTML = "";
+    let totalAcumulado = 0;
+
+    pedidoAcumulado.forEach(item => {
+        const subtotal = item.precio * item.cantidad;
+        totalAcumulado += subtotal;
+
+        const li = document.createElement("li");
+        li.innerHTML = `
+            <strong>${item.cantidad}x</strong> ${item.nombre} 
+            <span>$${subtotal.toLocaleString('co-CO')}</span>
+        `;
+        listaHTML.appendChild(li);
+    });
+
+    totalHTML.innerText = `$${totalAcumulado.toLocaleString('co-CO')}`;
+}
+
+// 3. Envío final a la caja
+function enviarACaja() {
+    if (pedidoAcumulado.length === 0) {
+        alert("El pedido está vacío. Agrega platos antes de mandar a caja.");
+        return;
+    }
+
+    // Estructura JSON limpia lista para ser consumida por una API o backend en caja
+    const ordenParaCaja = {
+        fechaHora: new Date().toISOString(),
+        items: pedidoAcumulado,
+        totalCobrar: pedidoAcumulado.reduce((sum, item) => sum + (item.precio * item.cantidad), 0)
+    };
+
+    console.log("Enviando los siguientes datos a caja:", ordenParaCaja);
+    
+    alert(`¡Pedido enviado con éxito!\nTotal a pagar en caja: $${ordenParaCaja.totalCobrar.toLocaleString('co-CO')}`);
+    
+    // Limpiar el pedido tras enviarlo
+    pedidoAcumulado = [];
+    actualizarInterfazPedido();
+}
+
